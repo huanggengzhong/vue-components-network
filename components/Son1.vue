@@ -1,6 +1,6 @@
 <template>
     <div>儿子1: {{value}}
-        <button @click="change">点击修改</button>
+<button @click="$emit('update:value',300)">点击修改父组件,值变为300</button>
         <Grandson1 :value="value" @say="say"></Grandson1>
     </div>
 </template>
@@ -17,10 +17,10 @@ export default {
         say(){
             console.log('我很帅')
         },
-        change(){
-            // this.$emit('update:value',200)
-            this.$emit('input',300)
-        }
+        // change(){
+        //     // this.$emit('update:value',200)
+        //     this.$emit('input:value',300)
+        // }
     },
     props:{
         value:{

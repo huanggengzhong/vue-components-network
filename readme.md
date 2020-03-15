@@ -6,7 +6,7 @@ sudo npm install @vue/cli -g
 sudo npm install -g @vue/cli-service-global
 vue serve App.vue
 ```
-## 一.Props传递数据
+## 一.Props传递数据（父->子）
 ```tree
 components
    ├── Grandson1.vue // 孙子1
@@ -51,12 +51,14 @@ export default {
 </script>
 
 
-## 二.$emit使用
-子组件触发父组件方法,通过回调的方式将修改的内容传递给父组件
-```html
+## 二.$emit使用(子->父)
+父组件自定义一个方法,子组件通过回调的方式将修改的内容传递给父组件.
+父组件:
+```js
 <template>
  <div>
   父组件:{{mny}}
+  //这里自定义一个@input方法
   <Son1 :mny="mny" @input="change"></Son1>
  </div>
 </template>
@@ -79,10 +81,12 @@ export default {
 ```
 
 子组件触发绑定自己身上的方法
+子组件
 ```html
 <template>
  <div>
-  子组件1: {{mny}}
+  子组件获取父组件的mny数据: {{mny}}
+//子组件调用$emit方法,参数1是父组件自定义的方法名,参数2是要改变的值
   <button @click="$emit('input',200)">更改</button>
  </div>
 </template>
@@ -96,22 +100,31 @@ export default {
 };
 </script>
 ```
+总结:其实就是子组件中通过调用$emit()方法,里面参数1是写自定义方法属性名,参数2是要改变的值,然后在父组件自己的方法中来改变自己的data,从而改变父组件的数据.
 
-> 这里的主要目的就是同步父子组件的数据,->语法糖的写法
+> 下面介绍同步父子组件的数据的两个语法糖写法
 
-### .sync
-```html
-<Son1 :mny.sync="mny"></Son1>
-<!-- 触发的事件名 update:(绑定.sync属性的名字) -->
-<button @click="$emit('update:mny',200)">更改</button>
+### .sync 父组件事件语法糖
+```js
+//通常父组件自定义事件名会写成update名:值写法
+ //子
+ <button @click="$emit('update:value',200)">更改</button>
+//父
+<Son1  @update:value="change"></Son1>
+//这样父组件可以简写为下面:
+<Son1 :value.sync="mny"></Son1>
 ```
 
-### v-model
-```html
+### v-model 事件和值的语法糖
+```js
+
+//常规写法
+<Son1 :value="mny" @input="mny=>this.mny=mny"></Son1>
+//简写,注意点:父自定义事件名只能是input,子接收的子属性名只能是value
 <Son1 v-model="mny"></Son1>
 <template>
  <div>
-  子组件1: {{value}} // 触发的事件只能是input
+  子组件1: {{value}} // 触发的自定义事件名只能是input
   <button @click="$emit('input',200)">更改</button>
  </div>
 </template>
@@ -129,7 +142,7 @@ export default {
 
 ## 三.$parent、$children
 继续将属性传递
-```html
+​```html
 <Grandson1 :value="value"></Grandson1>
 <template>
  <div>
@@ -152,7 +165,7 @@ export default {
 > 如果层级很深那么就会出现$parent.$parent.....我们可以封装一个$dispatch方法向上进行派发
 
 ### $dispatch
-```javascript
+​```javascript
 Vue.prototype.$dispatch = function $dispatch(eventName, data) {
   let parent = this.$parent;
   while (parent) {

@@ -6,7 +6,9 @@
         <!-- <Son1 :value.sync="mny"></Son1> -->
         <!-- ref可以用到dom元素上 获取的是dom节点 -->
         <!-- 放到组件上获取的就是当前的组件 -->
-        <Son1 :value="mny" @input="change" ref="son1"></Son1>
+        <!-- <Son1 :value="mny" @input="change" ref="son1"></Son1> -->
+        <!-- <Son1 :value="mny" @update:value="change" ref="son1"></Son1> -->
+        <Son1 :value.sync="mny"></Son1>
 
         <!-- 什么时候使用.sync 、 v-model -->
 
@@ -36,9 +38,9 @@ export default {
         son(){
             console.log('有人点我')
         },
-        change(value){
-            this.mny = value;
-        }
+        // change(value){
+        //     this.mny = value;
+        // }
     },
     components:{
         Son1,
