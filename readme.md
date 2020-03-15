@@ -107,11 +107,11 @@ export default {
 ### .sync 父组件事件语法糖
 ```js
 //通常父组件自定义事件名会写成update名:值写法
- //子
+ //子,注意点:事件名要用update
  <button @click="$emit('update:value',200)">更改</button>
-//父
+//父,change中还要像上面那样赋值,比较多代码
 <Son1  @update:value="change"></Son1>
-//这样父组件可以简写为下面:
+//父,简写为下面:
 <Son1 :value.sync="mny"></Son1>
 ```
 
